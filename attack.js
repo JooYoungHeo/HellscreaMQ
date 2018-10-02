@@ -2,12 +2,13 @@ const amqp = require('amqplib/callback_api');
 
 amqp.connect('amqp://localhost', (err, conn) => {
 	conn.createChannel((err, ch) => {
-		let q = 'Garrosh';
+		let q = 'Guldan';
+		let message = process.argv.slice(2).join(' ') || 'Garrosh Hellscream';
 
-		ch.assertQueue(q, {durable: false});
+		ch.assertQueue(q, {durable: false, transient: false});
 
-		ch.sendToQueue(q, new Buffer('Garrosh Hellscream'));
-		console.log(" [x] Sent Message");
+		ch.sendToQueue(q, Buffer.from(message), {persistent: true});
+		console.log(" [x] Sent %s", message);
 
 	});
 });
